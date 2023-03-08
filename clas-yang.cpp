@@ -34,10 +34,6 @@ public:
         return pid;
     }
 
-    long getTimestamp(){
-        return t;
-    }
-
     ECn& getPub(){
         return Pub;
     }
@@ -45,15 +41,14 @@ public:
     virtual Sig& sign(string& m){        
         Big u = rand(q);
         ECn U = u * g;
-        t = clock();
         // h2_struct = H2{pid, pk, U, t};
         // h3_struct = H3{pid, U};
-        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << U << t;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << U << Pub;
         Big h2 = Hash(st);
-        st << pid.pid1 << pid.pid2 << m << U;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << U << Pub;
         Big h3 = Hash(st);
 
-        sig.s = u + sk.x * h3 + sk.d * h2;
+        sig.s = u + h3 * (h2 * sk.x + sk.d);
         sig.U = U;
         return sig;
     }
@@ -63,7 +58,6 @@ private:
     SK sk;
     Sig sig;
     stringstream st;
-    long t;
     PID pid;
 
     // struct H1
@@ -89,22 +83,22 @@ private:
 
 };
 
-bool verify(Sig& sig, PID& pid, PK& pk, ECn& Pub, string& m, long timestp){
+bool verify(Sig& sig, PID& pid, PK& pk, ECn& Pub, string& m){
         // suppose we have received PID, PK, T, m and s
         long start = clock();
         stringstream st;
         ECn left, right;
         st << pid.pid1 << pid.pid2 << pk.R << Pub;
         Big h1 = Hash(st);
-        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << sig.U << timestp;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << sig.U << Pub;
         Big h2 = Hash(st);
-        st << pid.pid1 << pid.pid2 << m << sig.U;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << sig.U << Pub;
         Big h3 = Hash(st);
         left = sig.s * g;
         right = h1 * Pub;
         right += pk.R;
-        right *= h2;
-        right += h3 * pk.X;
+        right += h2 * pk.X;
+        right *= h3;
         right += sig.U;
         // cout << left << endl << right << endl;
         if(left == right) {
@@ -114,7 +108,7 @@ bool verify(Sig& sig, PID& pid, PK& pk, ECn& Pub, string& m, long timestp){
         return false;
 }
 
-bool aggVerify(int n, string& msg, Big& aggSig, vector<PID>& vecPID, vector<PK>& vecPK, vector<ECn>& vecU, vector<long>& vecT){
+bool aggVerify(int n, string& msg, Big& aggSig, vector<PID>& vecPID, vector<PK>& vecPK, vector<ECn>& vecU){
 long start = clock();
     ECn right, r1, r2;
     Big r3;
@@ -123,19 +117,16 @@ long start = clock();
     for(int i=0;i<n;i++){
         st << vecPID[i].pid1 << vecPID[i].pid2 << vecPK[i].R << Pub;
         Big h1 = Hash(st);
-        st << vecPID[i].pid1 <<vecPID[i].pid2 << msg << vecPK[i].X << vecPK[i].R << vecU[i] << vecT[i];
+        st << vecPID[i].pid1 <<vecPID[i].pid2 << msg << vecPK[i].X << vecPK[i].R << vecU[i] << Pub;
         Big h2 = Hash(st);
-        st << vecPID[i].pid1 << vecPID[i].pid2 << msg << vecU[i];
+        st << vecPID[i].pid1 <<vecPID[i].pid2 << msg << vecPK[i].X << vecPK[i].R << vecU[i] << Pub;
         Big h3 = Hash(st);
 
-        r1 += vecU[i];
-        r2 += h3 * vecPK[i].X;
-        r2 += h2 * vecPK[i].R;
-        r3 += h1 * h2;
+        right += vecU[i];
+        right += h3 * h2 * vecPK[i].X;
+        right += h3 * vecPK[i].R;
+        right += h3 * h1 * Pub;
     }
-    right += r1;
-    right += r2;
-    right += r3 * Pub;
     if(left == right){
         return true;
     }
@@ -161,7 +152,7 @@ void singleTest(OurCLAS& clas){
 
     cout << "\nNow, we start to verify the sig." << endl;
     start = clock();
-    if(verify(sig, clas.getPID(), clas.getPK(), clas.getPub(), msg, clas.getTimestamp())){
+    if(verify(sig, clas.getPID(), clas.getPK(), clas.getPub(), msg)){
         diff = ((double)clock() - start)/ CLOCKS_PER_SEC * 1000.0;
         printf("[*] ACCEPT! Verification Time: %.6fms\n", diff);
     }
@@ -178,7 +169,7 @@ void avgTest(OurCLAS& clas, int n){
         sig = clas.sign(msg);
         s_total += clock() - s_start;
         v_start = clock();
-        if(verify(sig, clas.getPID(), clas.getPK(), clas.getPub(), msg, clas.getTimestamp())){
+        if(verify(sig, clas.getPID(), clas.getPK(), clas.getPub(), msg)){
             v_total += clock() - v_start;
         }else{
             cout << "[x] verification reject!" << endl;
@@ -194,7 +185,6 @@ void aggTest(OurCLAS& ourclas, int n){
     vector<ECn> vecU;
     vector<PID> vecPID;
     vector<PK> vecPK;
-    vector<long> vecT;
     Big aggSig(0);
     for(int i=0; i< n; i++){
         ourclas.reg();
@@ -203,10 +193,9 @@ void aggTest(OurCLAS& ourclas, int n){
         vecU.push_back(sig.U);
         vecPID.push_back(ourclas.getPID());
         vecPK.push_back(ourclas.getPK());
-        vecT.push_back(ourclas.getTimestamp());
     }
     long start = clock();
-    if(aggVerify(n, msg, aggSig, vecPID, vecPK, vecU, vecT)){
+    if(aggVerify(n, msg, aggSig, vecPID, vecPK, vecU)){
         printf("[*] %d Aggregate Verify Time: %.6fms\n", n, ((double)clock() - start)/ CLOCKS_PER_SEC * 1000.0);
     }
 }

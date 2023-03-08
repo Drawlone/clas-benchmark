@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <ctime>
 
-// g++ paper2-pairing.cpp ssp_pair.cpp zzn2.cpp ecn.cpp  miracl.a -o paper2-pairing.out
+// g++ op-pairing.cpp ssp_pair.cpp zzn2.cpp ecn.cpp  miracl.a -o paper2-pairing.out
 
 #define MR_PAIRING_SSP   
 // #define MR_PAIRING_SS2	
@@ -65,6 +65,7 @@ int main(){
     double scalarMulAvgTime =  end_scalar_mul / 1000.0 / CLOCKS_PER_SEC * 1000.0;
     double scalarPowAvgTime =  end_scalar_pow / 1000.0 / CLOCKS_PER_SEC * 1000.0;
     double mtpAvgTime =  end_mtp / 1000.0 / CLOCKS_PER_SEC * 1000.0;
+    cout << endl << "------------OP--Pairing-------------" << endl;
     printf("[*] Pairing Opertion Time: %.6fms\n", pairAvgTime);
     printf("[*] Pairing Multiplication Opertion Time: %.6fms\n", mulAvgTime);
     printf("[*] Pairing Addition Opertion Time: %.6fms\n", addAvgTime);

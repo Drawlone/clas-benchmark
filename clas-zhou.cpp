@@ -48,12 +48,12 @@ public:
         t = clock();
         // h2_struct = H2{pid, pk, U, t};
         // h3_struct = H3{pid, U};
-        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << U << t;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << U << Pub << t;
         Big h2 = Hash(st);
-        st << pid.pid1 << pid.pid2 << m << U;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << U << Pub << h2;
         Big h3 = Hash(st);
 
-        sig.s = u + sk.x * h3 + sk.d * h2;
+        sig.s = u - sk.x * h2 - sk.d * h3;
         sig.U = U;
         return sig;
     }
@@ -96,16 +96,15 @@ bool verify(Sig& sig, PID& pid, PK& pk, ECn& Pub, string& m, long timestp){
         ECn left, right;
         st << pid.pid1 << pid.pid2 << pk.R << Pub;
         Big h1 = Hash(st);
-        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << sig.U << timestp;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << sig.U << Pub << timestp;
         Big h2 = Hash(st);
-        st << pid.pid1 << pid.pid2 << m << sig.U;
+        st << pid.pid1 << pid.pid2 << m << pk.X << pk.R << sig.U << Pub << h2;
         Big h3 = Hash(st);
-        left = sig.s * g;
-        right = h1 * Pub;
-        right += pk.R;
-        right *= h2;
-        right += h3 * pk.X;
-        right += sig.U;
+        left = sig.U;
+        right = sig.s * g;
+        right += h2 * pk.X;
+        right += h3 * pk.R;
+        right += h3 * h1 * Pub;
         // cout << left << endl << right << endl;
         if(left == right) {
             return true;
@@ -116,26 +115,24 @@ bool verify(Sig& sig, PID& pid, PK& pk, ECn& Pub, string& m, long timestp){
 
 bool aggVerify(int n, string& msg, Big& aggSig, vector<PID>& vecPID, vector<PK>& vecPK, vector<ECn>& vecU, vector<long>& vecT){
 long start = clock();
-    ECn right, r1, r2;
-    Big r3;
+    ECn right, left;
+    Big r1;
     stringstream st;
-    ECn left = aggSig * g;
     for(int i=0;i<n;i++){
         st << vecPID[i].pid1 << vecPID[i].pid2 << vecPK[i].R << Pub;
         Big h1 = Hash(st);
-        st << vecPID[i].pid1 <<vecPID[i].pid2 << msg << vecPK[i].X << vecPK[i].R << vecU[i] << vecT[i];
+        st << vecPID[i].pid1 <<vecPID[i].pid2 << msg << vecPK[i].X << vecPK[i].R << vecU[i] << Pub << vecT[i];
         Big h2 = Hash(st);
-        st << vecPID[i].pid1 << vecPID[i].pid2 << msg << vecU[i];
+        st << vecPID[i].pid1 << vecPID[i].pid2 << msg << vecPK[i].X << vecPK[i].R << vecU[i] << Pub << h2;
         Big h3 = Hash(st);
 
-        r1 += vecU[i];
-        r2 += h3 * vecPK[i].X;
-        r2 += h2 * vecPK[i].R;
-        r3 += h1 * h2;
+        left += vecU[i];
+        right += h2 * vecPK[i].X;
+        right += h3 * vecPK[i].R;
+        r1 += h3 * h1;
     }
-    right += r1;
-    right += r2;
-    right += r3 * Pub;
+    right += aggSig * g;
+    right += r1 * Pub;
     if(left == right){
         return true;
     }

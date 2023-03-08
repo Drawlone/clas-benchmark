@@ -4,13 +4,25 @@ add_includedirs("include")
 add_links("crypto")
 add_linkdirs("lib")
 add_links("miracl")
-add_files("ecn.cpp")
+add_files("ecn.cpp", "clas.cpp")
 set_optimize("fastest")
 
+-- xmake run -w . clas-*
 target("clas-our")
     set_kind("binary")
     add_files("clas-our.cpp")
 
+target("clas-zhou")
+    set_kind("binary")
+    add_files("clas-zhou.cpp")
+
+target("clas-deng")
+    set_kind("binary")
+    add_files("clas-deng.cpp")
+
+target("clas-yang")
+    set_kind("binary")
+    add_files("clas-yang.cpp")
 
 target("op-ecc")
     set_kind("binary")

@@ -5,9 +5,9 @@
 #include "ecn.h"
 #include <openssl/sha.h>
 
-Miracl precision(48, 16);
-
 #define HASH_LEN 32
+
+Miracl precision(196, 16);
 
 Big H1(const char *string)
 { // Hash a zero-terminated string to a number < modulus
@@ -97,7 +97,7 @@ int main(){
         end += clock() - start;
     }
     double sslhashAvgTime =  end / 1000.0 / CLOCKS_PER_SEC * 1000.0;
-
+    cout << endl << "------------OP--ECC-------------" << endl;
     printf("[*] Addition Opertion Time: %.6fms\n", addAvgTime);
     printf("[*] Multiplication Opertion Time: %.6fms\n", mulAvgTime);
     printf("[*] Miracl Hash Opertion Time: %.6fms\n", hashAvgTime);
