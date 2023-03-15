@@ -1,0 +1,66 @@
+------------Deng-------------
+[*] Average Sign Time: 0.550920ms
+[*] Average Verify Time: 2.938880ms
+[*] 20 Aggregate Verify Time: 42.096000ms
+[*] 40 Aggregate Verify Time: 83.592000ms
+[*] 60 Aggregate Verify Time: 122.443000ms
+[*] 80 Aggregate Verify Time: 174.355000ms
+[*] 100 Aggregate Verify Time: 199.336000ms
+
+------------Our-------------
+[*] Average Sign Time: 0.484180ms
+[*] Average Verify Time: 2.792550ms
+[*] 20 Aggregate Verify Time: 24.625000ms
+[*] 40 Aggregate Verify Time: 47.974000ms
+[*] 60 Aggregate Verify Time: 69.342000ms
+[*] 80 Aggregate Verify Time: 89.582000ms
+[*] 100 Aggregate Verify Time: 112.036000ms
+
+------------Xu-------------
+First, we generate public key and scret key!
+
+Then we compute the signature.
+Sig: {(7C2629838F3CF04D56AF52AB6347798D037FCBB508F37C7E51AB1BD37F2A511462170178518BA38572DF438E9EABEF81E3F107EAA4F8BB95FCC8F419B2559A2,75A3885890D5FCD4D7A1207E2927FD9368D55C2884C6A13EEC1CC7CCD230635050828ECE91F9C7AA67DC4D9FD106C1040E32E2D820A5A1FB99A82D1E4D5AFC2C), (5CA07B597675F8BACDFDA57C087540FC700AA97ACFBDC10001F3C8C54E67EBED7E823DA4A22A4A946BEE87213A1B7D9ABBEB48EC11131BCFFE103372836EF600,4E327439E6A76F8707F43E4AB27B1CC8B286038374CDFD43FB1420FDB52314A6C47207465D9940F691DFCB71AD7CA9BA8FF4D5E6BCD81031909C7BD3985771C)}
+[*] Sign Time: 9.816000ms
+
+Now, we start to verify the sig.
+[*] ACCEPT! Verification Time: 18.917000ms
+[*] Average Sign Time: 8.356160ms
+[*] Average Verify Time: 16.534370ms
+[*] 20 Aggregate Verify Time: 136.480000ms
+[*] 40 Aggregate Verify Time: 256.052000ms
+[*] 60 Aggregate Verify Time: 382.686000ms
+[*] 80 Aggregate Verify Time: 503.606000ms
+[*] 100 Aggregate Verify Time: 626.003000ms
+
+------------Yang-------------
+[*] Average Sign Time: 0.561090ms
+[*] Average Verify Time: 2.864810ms
+[*] 20 Aggregate Verify Time: 53.538000ms
+[*] 40 Aggregate Verify Time: 98.182000ms
+[*] 60 Aggregate Verify Time: 148.836000ms
+[*] 80 Aggregate Verify Time: 198.572000ms
+[*] 100 Aggregate Verify Time: 248.008000ms
+
+------------Zhou-------------
+[*] Average Sign Time: 0.580330ms
+[*] Average Verify Time: 3.268910ms
+[*] 20 Aggregate Verify Time: 25.116000ms
+[*] 40 Aggregate Verify Time: 48.841000ms
+[*] 60 Aggregate Verify Time: 73.009000ms
+[*] 80 Aggregate Verify Time: 95.705000ms
+[*] 100 Aggregate Verify Time: 118.749000ms
+
+------------OP--ECC-------------
+[*] Addition Opertion Time: 0.003329ms
+[*] Multiplication Opertion Time: 0.357444ms
+[*] Miracl Hash Opertion Time: 0.001118ms
+[*] Openssl Hash Opertion Time: 0.000863ms
+
+------------OP--Pairing-------------
+[*] Pairing Opertion Time: 2.530737ms
+[*] Pairing Multiplication Opertion Time: 0.002897ms
+[*] Pairing Addition Opertion Time: 0.010884ms
+[*] Pairing Scalar Multiplication Opertion On G1 Time: 1.087090ms
+[*] Pairing Scalar Power On GT Opertion Time: 0.269642ms
+[*] Map To Point Opertion Time: 2.741810ms

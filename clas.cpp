@@ -33,11 +33,3 @@ Big Hash(stringstream &st){
     delete[] buff;
     return from_binary(HASH_LEN, (char *)value);
 }
-
-
-
-
-
-void aggTest(Clas& clas, int n){
-
-}

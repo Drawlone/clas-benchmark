@@ -217,8 +217,12 @@ int main(){
     setup();
     cout << endl << "------------Our-------------" << endl;
     OurCLAS ourclas;
-    singleTest(ourclas);
+    // singleTest(ourclas);
     avgTest(ourclas, 100);
+    aggTest(ourclas, 20);
+    aggTest(ourclas, 40);
+    aggTest(ourclas, 60);
+    aggTest(ourclas, 80);
     aggTest(ourclas, 100);
     
     return 0;

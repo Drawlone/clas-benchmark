@@ -4,25 +4,24 @@ add_includedirs("include")
 add_links("crypto")
 add_linkdirs("lib")
 add_links("miracl")
-add_files("ecn.cpp", "clas.cpp")
 set_optimize("fastest")
 
 -- xmake run -w . clas-*
 target("clas-our")
     set_kind("binary")
-    add_files("clas-our.cpp")
+    add_files("clas-our.cpp", "ecn.cpp", "clas.cpp")
 
 target("clas-zhou")
     set_kind("binary")
-    add_files("clas-zhou.cpp")
+    add_files("clas-zhou.cpp", "ecn.cpp", "clas.cpp")
 
 target("clas-deng")
     set_kind("binary")
-    add_files("clas-deng.cpp")
+    add_files("clas-deng.cpp", "ecn.cpp", "clas.cpp")
 
 target("clas-yang")
     set_kind("binary")
-    add_files("clas-yang.cpp")
+    add_files("clas-yang.cpp", "ecn.cpp", "clas.cpp")
 
 target("op-ecc")
     set_kind("binary")
@@ -31,6 +30,10 @@ target("op-ecc")
 target("op-pairing")
     set_kind("binary")
     add_files("op-pairing.cpp", "ssp_pair.cpp", "zzn2.cpp")
+
+target("clas-xu")
+    set_kind("binary")
+    add_files("clas-xu.cpp", "ssp_pair.cpp", "zzn2.cpp")
 
 
 

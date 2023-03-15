@@ -212,10 +212,14 @@ void aggTest(OurCLAS& ourclas, int n){
 int main(){
     irand(2022l); // 置随机种子
     setup();
-    cout << endl << "------------Our-------------" << endl;
+    cout << endl << "------------Deng-------------" << endl;
     OurCLAS ourclas;
-    singleTest(ourclas);
+    // singleTest(ourclas);
     avgTest(ourclas, 100);
+    aggTest(ourclas, 20);
+    aggTest(ourclas, 40);
+    aggTest(ourclas, 60);
+    aggTest(ourclas, 80);
     aggTest(ourclas, 100);
     
     return 0;
